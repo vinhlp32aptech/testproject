@@ -9,6 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.mindrot.jbcrypt.BCrypt;
+
+import common.ConnectDB;
+import dao.AccountDao;
+import entity.Account;
+import helper.CheckForm;
 
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -26,6 +32,8 @@ import javax.swing.JPasswordField;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.DriverManager;
+
 import javax.swing.JRadioButton;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -149,7 +157,7 @@ public class SignIn extends JFrame {
 		chckbxNewCheckBox.setBackground(new Color(204, 255, 255));
 		
 		JLabel lblNewLabel_2 = new JLabel("You don't have an account ?");
-		lblNewLabel_2.setBounds(26, 243, 150, 20);
+		lblNewLabel_2.setBounds(26, 243, 158, 20);
 		
 		JLabel lblNewLabel_3 = new JLabel("<html><u> SignUp now</u></html> ");
 		lblNewLabel_3.setBounds(194, 247, 78, 13);
@@ -174,6 +182,7 @@ public class SignIn extends JFrame {
 				
 			}
 		});
+		
 		panel_1.setLayout(null);
 		panel_1.add(btnSignIn);
 		panel_1.add(chckbxNewCheckBox);
@@ -181,7 +190,7 @@ public class SignIn extends JFrame {
 		panel_1.add(lblNewLabel_2);
 		panel_1.add(lblNewLabel_3);
 		
-		txtUserName = new JTextField();
+		txtUserName = new JTextField();	
 		txtUserName.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -190,7 +199,7 @@ public class SignIn extends JFrame {
 			}
 		});
 		txtUserName.setText("Enter UserName");
-//		txtUserName.addFocusListener(new FocusAdapter() {
+		txtUserName.addFocusListener(new FocusAdapter() {
 //			@Override
 //			public void focusGained(FocusEvent e) {
 //				if(txtUserName.getText().equals("Enter UserName")) {
@@ -199,16 +208,16 @@ public class SignIn extends JFrame {
 //				}
 //				txtUserName.setForeground(Color.BLACK);
 //			}
-//			@Override
-//			public void focusLost(FocusEvent e) {
-//				if(txtUserName.getText().equals("")) {
-//					txtUserName.setText("Enter UserName");
-//					
-//				}
-//				txtUserName.setForeground(Color.GRAY);
-//			}
-//			
-//		});
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(txtUserName.getText().equals("")) {
+					txtUserName.setText("Enter UserName");
+					
+				}
+				txtUserName.setForeground(Color.GRAY);
+			}
+			
+		});
 		
 		txtUserName.setForeground(Color.GRAY);
 		txtUserName.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -228,6 +237,25 @@ public class SignIn extends JFrame {
 		passwordField.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		passwordField.setBounds(10, 99, 262, 33);
 		 passwordField.setEchoChar((char)0);
+		 passwordField.addFocusListener(new FocusAdapter() {
+//				@Override
+//				public void focusGained(FocusEvent e) {
+//					if(txtUserName.getText().equals("Enter UserName")) {
+//						txtUserName.setText("");
+//						
+//					}
+//					txtUserName.setForeground(Color.BLACK);
+//				}
+				@Override
+				public void focusLost(FocusEvent e) {
+					if(passwordField.getText().equals("")) {
+						passwordField.setText("Enter Password");
+						
+					}
+					passwordField.setForeground(Color.GRAY);
+				}
+				
+			});
 		panel_1.add(passwordField);
 		panel.setLayout(gl_panel);
 	}
@@ -240,18 +268,34 @@ public class SignIn extends JFrame {
 		 passwordField.setEchoChar((char)0);
 		}
 	protected void clickabc(MouseEvent e) {
-		passwordField.setText("");
-		 passwordField.setEchoChar('●');
-		 passwordField.setForeground(Color.BLACK);
+			passwordField.setText("");
+			passwordField.setEchoChar('●');
+			passwordField.setForeground(Color.BLACK);
 		
 	}
 
 	private void rbtSignInActionPerformed(ActionEvent e) {  
 
+		var acc = new Account();
 		if(txtUserName.getText().equals("")) {
 			JOptionPane.showMessageDialog(this,"Please enter your username");	
+		}else if( CheckForm.checkUsername(txtUserName.getText())==false) {
+			JOptionPane.showMessageDialog(this,"UserName must be from 6 to 20 character and not contain the character special, the blank space");	
 		}else if(passwordField.getText().equals("")) {
 			JOptionPane.showMessageDialog(this,"Please enter your password");	
+		}else if( CheckForm.checkPassword(passwordField.getText())==false) {
+			JOptionPane.showMessageDialog(this,"Your password must be from 6 to 20 character and not contain the character special, the blank space");	
+		}else {		
+		
+
+		Integer getid =	new AccountDao().selectAccount(acc,txtUserName.getText(),passwordField.getText());
+			UpdateAccount UpAcc = new UpdateAccount();
+			acc.setId_acc(getid);
+			UpAcc.setAcc(acc);
+			UpAcc.setVisible(true);
+			UpAcc.setSign(this);
+			this.setVisible(false);
+			}
 		}
-		}
+
 }

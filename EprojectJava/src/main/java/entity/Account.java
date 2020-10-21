@@ -1,12 +1,15 @@
 package entity;
 
+
 import java.time.LocalDate;
+
 
 public class Account {
 	
 	private int id_acc;
 	private String account;
 	private String fullname;
+	private String pass;
 	private LocalDate dob;
 	private String gender;
 	private int phone;
@@ -14,13 +17,13 @@ public class Account {
 	private String addr;
 	
 	public Account() {}
-	
-	public Account(int id_acc, String account, String fullname, LocalDate dob, String gender, int phone, String email,
-			String addr) {
-		
+
+	public Account(int id_acc, String account, String fullname, String pass, LocalDate dob, String gender, int phone,
+			String email, String addr) {
 		this.id_acc = id_acc;
 		this.account = account;
 		this.fullname = fullname;
+		this.pass = pass;
 		this.dob = dob;
 		this.gender = gender;
 		this.phone = phone;
@@ -50,6 +53,14 @@ public class Account {
 
 	public void setFullname(String fullname) {
 		this.fullname = fullname;
+	}
+
+	public String getPass() {
+		return pass;
+	}
+
+	public void setPass(String pass) {
+		this.pass = pass;
 	}
 
 	public LocalDate getDob() {
@@ -94,9 +105,10 @@ public class Account {
 
 	@Override
 	public String toString() {
-		return "Account [id_acc=" + id_acc + ", account=" + account + ", fullname=" + fullname + ", dob=" + dob
-				+ ", gender=" + gender + ", phone=" + phone + ", email=" + email + ", addr=" + addr + "]";
+		return "Account [id_acc=" + id_acc +"]";
 	}
+	
+	
 	
 	
 	
